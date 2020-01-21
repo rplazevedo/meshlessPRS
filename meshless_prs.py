@@ -92,6 +92,37 @@ def energy_cond(phi_list, V):
                     +(0.5*(phi_list[4]-phi_list[5])/delta_y)**2
                     +V) >= V0*alpha_e
 
+def get_neighbours(coord, N):
+    """
+    Parameters
+    ----------
+    coord : tuple
+        Indices (i,j) of a given point in the mesh.
+    N : size of the mesh
+
+    Returns
+    -------
+    Coordinates of the neighbouring points, given periodic boundary conditions.
+    Output is a tuple: (i+1, i-1, j+1, j-1)
+    """
+    if x != 0:
+        x_l = x-1
+    else:
+        x_l = N
+    if x != N:
+        x_r = x+1
+    else:
+        x_r = 0            
+    if y != 0:
+        y_d = y-1
+    else:
+        y_d = N
+    if y != N:
+        y_u = y+1
+    else:
+        y_u = 0
+    return (x_r, x_l, y_u, y_d)
+
 # Load final data from initial PRS calculation:
 phi_init = np.load(str(name)+'_phi_data'+str(last_part)+'.npy')[-1]
 d_phi_init = np.load(str(name)+'_d_phi_data'+str(last_part)+'.npy')[-1]
@@ -135,22 +166,7 @@ for t in tspan:
     for coord, point in phi_dic.items():
         # Get coordinates of the neighbours
         x,y = coord
-        if x != 0:
-            x_l = x-1
-        else:
-            x_l = Nx
-        if x != Nx:
-            x_r = x+1
-        else:
-            x_r = 0            
-        if y != 0:
-            y_d = y-1
-        else:
-            y_d = Nx
-        if y != Nx:
-            y_u = y+1
-        else:
-            y_u = 0
+        x_r, x_l, y_u, y_d = get_neighbours(coord, Nx)
             
         try:
             point[2] = phi_dic[(x_r, y)][0]
@@ -174,26 +190,9 @@ for t in tspan:
     # Step 6: update the list of non-vacuums
     
     for coord, point in phi_dic.items():
-        
+        # Get coordinates of the neighbours
         x,y = coord
-        
-        if x != 0:
-            x_l = x-1
-        else:
-            x_l = Nx
-        if x != Nx:
-            x_r = x+1
-        else:
-            x_r = 0
-            
-        if y != 0:
-            y_d = y-1
-        else:
-            y_d = Nx
-        if y != Nx:
-            y_u = y+1
-        else:
-            y_u = 0
+        x_r, x_l, y_u, y_d = get_neighbours(coord, Nx)
 
         # First check if the point still belongs in the dictionary and remove
         # it if it is a vacuum
@@ -212,18 +211,20 @@ for t in tspan:
                 x_rr = 0
             phi = point[2]
             phi_l = point[0]
+            sign_phi = np.sign(phi)
             try:
                 phi_r = phi_dic[(x_rr, y)][0]
             except KeyError:
-                phi_r = np.sign(phi)            
+                phi_r = sign_phi            
             try:
                 phi_u = phi_dic[(x_r, y_u)][0]
             except KeyError:
-                phi_u = np.sign(phi)
+                phi_u = sign_phi
             try:
                 phi_d = phi_dic[(x_r, y_d)][0]
             except KeyError:
-                phi_d = np.sign(phi)
+                phi_d = sign_phi
+                
             if energy_cond([phi, 0, phi_r, phi_l, phi_u, phi_l], V(phi)):
                 phi_dic[x_r, y] = [phi, 0, phi_r, phi_l, phi_u, phi_l]
         
@@ -235,18 +236,19 @@ for t in tspan:
                 x_ll = Nx
             phi = point[3]
             phi_r = point[0]
+            sign_phi = np.sign(phi)
             try:
                 phi_l = phi_dic[(x_ll, y)][0]
             except KeyError:
-                phi_l = np.sign(phi)            
+                phi_l = sign_phi           
             try:
                 phi_u = phi_dic[(x_l, y_u)][0]
             except KeyError:
-                phi_u = np.sign(phi)
+                phi_u = sign_phi
             try:
                 phi_d = phi_dic[(x_l, y_d)][0]
             except KeyError:
-                phi_d = np.sign(phi)
+                phi_d = sign_phi
                 
             if energy_cond([phi, 0, phi_r, phi_l, phi_u, phi_l], V(phi)):
                 phi_dic[x_l, y] = [phi, 0, phi_r, phi_l, phi_u, phi_l]
@@ -259,18 +261,19 @@ for t in tspan:
                 y_uu = 0
             phi = point[4]
             phi_d = point[0]
+            sign_phi = np.sign(phi)
             try:
                 phi_u = phi_dic[(x, y_uu)][0]
             except KeyError:
-                phi_u = np.sign(phi)            
+                phi_u = sign_phi            
             try:
                 phi_r = phi_dic[(x_r, y_u)][0]
             except KeyError:
-                phi_r = np.sign(phi)
+                phi_r = sign_phi
             try:
                 phi_l = phi_dic[(x_l, y_u)][0]
             except KeyError:
-                phi_l = np.sign(phi)
+                phi_l = sign_phi
                 
             if energy_cond([phi, 0, phi_r, phi_l, phi_u, phi_l], V(phi)):
                 phi_dic[x, y_u] = [phi, 0, phi_r, phi_l, phi_u, phi_l]            
@@ -283,6 +286,7 @@ for t in tspan:
                 y_dd = Nx
             phi = point[5]
             phi_u = point[0]
+            sign_phi = np.sign(phi)
             try:
                 phi_d = phi_dic[(x, y_dd)][0]
             except KeyError:
@@ -299,21 +303,3 @@ for t in tspan:
             if energy_cond([phi, 0, phi_r, phi_l, phi_u, phi_l], V(phi)):
                 phi_dic[x, y_d] = [phi, 0, phi_r, phi_l, phi_u, phi_l]
                 
-
-                        
-                        
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
