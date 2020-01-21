@@ -19,9 +19,9 @@ all_phi = config['Parameters']['all_phi']
 if input('Run cleanup? y/(n)\n') in ['y','Y']:
     cleanup.run()
 
-run_init = input('Run initial sPRS? (y)/n \n')
-run_sPRS_cont = input('Run full sPRS? (y)/n \n')
-run_mPRS = input('Run mPRS? (y)/n \n')
+run_init = input('Run initial PRS? (y)/n \n')
+run_sPRS_cont = input('Run full PRS? (y)/n \n')
+run_mPRS = input('Run meshless PRS? (y)/n \n')
 plots = input('Plot data? y/(n) \n')
 
 import sprs_init
@@ -32,7 +32,7 @@ import merge_phi
 import plot_data
 
 if run_init in ['','y','Y']:
-    print('\n---Running initial sPRS---' )
+    print('\n---Running initial PRS---' )
     sprs_init.run()
 
 if run_sPRS_cont in ['','y','Y']:
@@ -44,7 +44,7 @@ if run_sPRS_cont in ['','y','Y']:
         merge_phi.run()
 
 if run_mPRS in ['','y','Y']:
-    print('\n---Running mPRS---')
+    print('\n---Running meshless PRS---')
     meshless_prs.run()
     merge_v.run()
     reduce_data.run()
