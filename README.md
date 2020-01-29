@@ -1,6 +1,6 @@
 # meshlessPRS
 
-This set of files is used to calculate the evolution of a domain wall network on a 2D grid using the PRS equaations, both in their standard form and in a version where only grid points that correspond to walls or radiation are evolved.
+This set of files is used to calculate the evolution of a domain wall network on a 2D grid using the PRS equations, both in their standard form and in a version where only grid points that correspond to walls or radiation are evolved.
 
 ## File description
 

@@ -36,7 +36,7 @@ if run_init in ['','y','Y']:
     sprs_init.run()
 
 if run_sPRS_cont in ['','y','Y']:
-    print('\n---Running rest of sPRS---' )
+    print('\n---Running rest of PRS---' )
     sprs_cont.run()
     merge_v.run()
     reduce_data.run()

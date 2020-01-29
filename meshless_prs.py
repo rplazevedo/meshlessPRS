@@ -191,7 +191,7 @@ def run():
         # Step 6: update the list of non-vacuums
         
         # We can't change the size of a dictionary during an iteration, so we
-        # store the coordinates of the values to store in a list and the points
+        # store the coordinates of the values to delete in a list and the points
         # to add in an auxiliary dictionary
         
         to_remove = []
