@@ -24,8 +24,6 @@ def run():
     dt = float(config['PRS']['dt'])
     delta_x = float(config['PRS']['dx'])
     delta_y = float(config['PRS']['dy'])
-    alpha_1 = float(config['Parameters']['alpha_1'])
-    alpha_2 = float(config['Parameters']['alpha_2'])
     alpha_e = float(config['Parameters']['alpha_e'])
     Nw_alpha = float(config['Parameters']['Nw_alpha'])
     daeta = int(config['Parameters']['dlna/dlneta'])
@@ -40,7 +38,7 @@ def run():
     
     
     
-    lbl = ['sPRS', r'no vac repl.', r'vac repl.']
+    lbl = ['sPRS', r'$\alpha_\rho=10^{-2}$', r'$\alpha_\rho=10^{-1}$']
     
     xlim_val =(dt*(Nt-1)*(last_part),dt*(Nt-1)*(nparts+last_part))
     ylim_val =  0
