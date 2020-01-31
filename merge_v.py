@@ -23,6 +23,7 @@ def run():
     nwalls = np.memmap(str(name) + '_nwalls.mymemmap', dtype='float32', mode='w+', shape=(Nt))
     nop = np.memmap(str(name) + '_nop.mymemmap', dtype='float32', mode='w+', shape=(Nt))
     exc_pts = np.memmap(str(name) + '_exc_pts.mymemmap', dtype='float32', mode='w+', shape=(Nt))
+    run_time = np.memmap(str(name) + '_run_time.mymemmap', dtype='float32', mode='w+', shape=(Nt))
 
     
     for p in range(1, parts+1):
@@ -32,6 +33,8 @@ def run():
         nwalls_fname = str(name) + '_nwalls_data' + str(p) + '.npy'
         nwalls_r = np.load(nwalls_fname)
         exc_pts_fname = str(name) + '_exc_pts_data' +str(p)+'.npy'
+        run_time_fname = str(name) + '_run_time_data' +str(p)+'.npy'
+        run_time_r = np.load(run_time_fname)
         try:
             exc_pts_r = np.load(exc_pts_fname)
         except:
@@ -49,6 +52,7 @@ def run():
                 v[c]=v_r[i]
                 exc_pts[c] = exc_pts_r[i]
                 nwalls[c]=nwalls_r[i]
+                run_time[c] = run_time_r[i]
                 try:
                     nop[c] = nop_r[i]
                 except: 
@@ -62,6 +66,7 @@ def run():
                 v[c]=v_r[i+1]
                 nwalls[c]=nwalls_r[i]
                 exc_pts[c] = exc_pts_r[i]
+                run_time[c] = run_time_r[i]
                 try:
                     nop[c]=nop_r[i]
                 except:
@@ -75,7 +80,8 @@ def run():
         number+=1
     np.savetxt(str(name) +'_'+str(number)+ '_v.txt', v)
     np.savetxt(str(name) +'_'+str(number)+ '_nwalls.txt', nwalls)
-    np.savetxt(str(name) +'_'+str(number)+ '_exc_pts.txt', exc_pts)    
+    np.savetxt(str(name) +'_'+str(number)+ '_exc_pts.txt', exc_pts) 
+    np.savetxt(str(name) +'_'+str(number)+ '_run_time.txt', exc_pts)    
     try:
         np.savetxt(str(name) +'_'+str(number)+ '_nop.txt', nop)
     except:

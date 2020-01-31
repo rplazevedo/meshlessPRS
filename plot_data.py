@@ -166,5 +166,30 @@ def run():
     plt.legend()
     plt.show()
 
+    # Run time plots
+    plt.figure()
+    number = 1
+    while os.path.isfile(str(name) +'_'+str(number)+ '_exc_pts.data'):
+        T, P = [], []
+        for line in open(str(name) +'_'+str(number)+ '_exc_pts.data',"r"):
+            x, y = line.split()
+            P.append(float(y))
+        for line in open(str(name) +'_'+str(number)+ '_run_time.data',"r"):
+            x, y = line.split()
+            T.append(float(y))
+            
+        plt.plot(((1-P)*Nx**2).astype(int), T, label=lbl[number], lw=line_width_val)
+        number += 1
+    plt.title(title_val)
+    plt.xlabel(r'$\Delta t$')
+    plt.ylabel('No. of points')
+    plt.xscale(xscale_val)
+    plt.yscale(yscale_val)
+    plt.xlim(xlim_val)
+    plt.ylim(bottom=ylim_val)
+    plt.grid()
+    plt.legend()
+    plt.show()
+
 # Run the function
 # run()

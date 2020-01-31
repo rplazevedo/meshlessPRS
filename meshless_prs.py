@@ -173,6 +173,8 @@ def run():
     n_op[0] = np.load(str(name)+'_nop_data'+str(last_part)+'.npy')[-1]   
     count_op = n_op[0]
     cond_pts = np.zeros((Nt),dtype=DTYPE)
+    run_time = np.zeros((Nt),dtype=DTYPE)
+    run_time[0] = np.nan
     tspan[0] = tspan_init
     for i in range(1,Nt):
         tspan[i] = tspan[0]+dt*i
@@ -189,8 +191,8 @@ def run():
             # Step 4: Calculate the next time step for the values in the diccionary
             start_prs = time.time()   #timer for counting the time it takes to complete a prs step      
             non_vac = int(len(phi_dic))
-            print("Vector size is:", non_vac)   #prints the number of non_vacuum elements 
-            print("Starting PRS algorithm")     
+            # print("Vector size is:", non_vac)   #prints the number of non_vacuum elements 
+            # print("Starting PRS algorithm")     
             Nwn1 = 0
             vn1 = 0
             for point in phi_dic.values():
@@ -205,15 +207,15 @@ def run():
                     vn1 += (point[1]**2/(1.0))/(V0*( (point[0]**2)/(phi_0**2)-1)**2)       
                     Nwn1 += 1 
                 count_op += 1
-            cond_pts[n+1] = 1-len(phi_dic)/Nx**2
+            cond_pts[n+1] = 1-non_vac/Nx**2
             N_walls[n+1] = Nwn1
             v[n+1] = vn1/(2*Nwn1)    
             n_op[n+1] = count_op
-            print("PRS algorithm is finished %s seconds ---" % (time.time() - start_prs)) 
+            # print("PRS algorithm is finished %s seconds ---" % (time.time() - start_prs)) 
             
             # Step 5: Now we must update the neighbours
             start_neig = time.time()   #timer for counting the time it takes to complete a neighbours update step  
-            print("Updating neighbors")
+            # print("Updating neighbors")
             for coord, point in phi_dic.items():
                 # Get coordinates of the neighbours
                 x,y = coord
@@ -237,7 +239,7 @@ def run():
                 except KeyError:
                     point[5] = phi_sign
                     
-            print("Neighbors update is finished %s seconds ---" % (time.time() - start_neig))
+            # print("Neighbors update is finished %s seconds ---" % (time.time() - start_neig))
             
             # Step 6: update the list of non-vacuums
             
@@ -389,6 +391,8 @@ def run():
             n_op[1:] = 0
             
             cond_pts[0] = cond_pts[-1]
+        run_time[n+1] = time.time() - start_prs
+        np.save(str(name) + '_run_time' + str(part+int(last_part)) + '.npy', tspan)
 
     print("Seconds:" +  str(time.time() - start_time))
     sys.stdout = orig_stdout
