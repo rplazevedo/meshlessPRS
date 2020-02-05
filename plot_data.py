@@ -41,6 +41,8 @@ def run():
     lbl = ['sPRS', r'$\alpha_\rho=10^{-2}$', r'$\alpha_\rho=10^{-1}$']
     
     xlim_val =(dt*(Nt-1)*(last_part),dt*(Nt-1)*(nparts+last_part))
+    # xlim_val =(0.1,dt*(Nt-1)*(nparts+last_part))
+
     ylim_val =  0
     line_width_val = 1.0
     xscale_val = 'log'

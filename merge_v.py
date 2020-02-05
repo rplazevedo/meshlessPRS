@@ -81,7 +81,7 @@ def run():
     np.savetxt(str(name) +'_'+str(number)+ '_v.txt', v)
     np.savetxt(str(name) +'_'+str(number)+ '_nwalls.txt', nwalls)
     np.savetxt(str(name) +'_'+str(number)+ '_exc_pts.txt', exc_pts) 
-    np.savetxt(str(name) +'_'+str(number)+ '_run_time.txt', exc_pts)    
+    np.savetxt(str(name) +'_'+str(number)+ '_run_time.txt', run_time)    
     try:
         np.savetxt(str(name) +'_'+str(number)+ '_nop.txt', nop)
     except:
