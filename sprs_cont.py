@@ -59,6 +59,9 @@ def run():
     v_r = np.load(str(name)+'_vdata'+str(last_part)+'.npy')
     N_walls_r = np.load(str(name)+'_nwalls_data'+str(last_part)+'.npy')
     n_op_r = np.load(str(name)+'_nop_data'+str(last_part)+'.npy')
+    run_time = np.zeros((Nt),dtype=DTYPE)
+    run_time[0] = np.load(str(name)+'_run_time_data'+str(last_part)+'.npy')[-1]
+
     
     
     start_time = time.time()
@@ -126,7 +129,7 @@ def run():
     for part in range(1,nparts+1):
         for n in range(0,Nt-1):
               
-#            step_start_time = time.time()                        
+            step_start_time = time.time()                        
             # Calculates the gradient of phi   
             nabla_phi[n] = ( (np.roll(phi[n],1,axis=0)+np.roll(phi[n],-1,axis=0)-2*phi[n])/(delta_x**2)+
                              (np.roll(phi[n],1,axis=1)+np.roll(phi[n],-1,axis=1)-2*phi[n])/(delta_y**2))                          
@@ -157,13 +160,14 @@ def run():
 #            print("n: " , n, "count: ", count_op, "part = ", part)
 #            print("--- %s seconds ---" % (time.time() - step_start_time))
             n_op[n+1] = count_op + count_op_last
-    
+            run_time[n+1] = time.time() - step_start_time
             #print("n_op[n+1]", n_op[n+1])
     
     #    print("Part " + str(part+int(last_part))+" is done--- %s seconds ---" % (time.time() - start_time))
     
         #numpart = part-1
     
+        
     
         if (all_phi=='yes' or all_phi=='YES'):
     
@@ -198,6 +202,8 @@ def run():
         np.save(str(name) + '_nwalls_data' + str(part+int(last_part)) + '.npy', N_walls)
         np.save(str(name) + '_nop_data' + str(part+int(last_part)) + '.npy', n_op)
         np.save(str(name) + '_exc_pts_data' + str(part+int(last_part)) + '.npy', exc_pts)
+        np.save(str(name) + '_run_time_data' + str(part+int(last_part)) + '.npy', run_time)
+
  
     
     #    print("Part " + str(part+int(last_part))+" is saved--- %s seconds ---" % (time.time() - start_time))
@@ -228,6 +234,8 @@ def run():
     
         n_op[0] = n_op[-1]
         n_op[1:] = 0
+        
+        run_time[0] = run_time[-1]
     
     
     #    print("Going to Part " + str(part+1)+"--- %s seconds ---" % (time.time() - start_time))

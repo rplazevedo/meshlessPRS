@@ -46,6 +46,10 @@ def run():
                 os.remove(str(name) + '_d_phi_data' + str(p) + '.npy')
             except FileNotFoundError:
                 pass
+            try:
+                os.remove(str(name) + '_run_time_data' + str(p) + '.npy')
+            except FileNotFoundError:
+                pass
     
         try:         
             os.remove(str(name) + '_v.mymemmap')
@@ -63,13 +67,17 @@ def run():
             os.remove(str(name) + '_nop.mymemmap')
         except FileNotFoundError:
             pass
-        
-         
+        try:
+            os.remove(str(name) + '_run_time.mymemmap')
+        except FileNotFoundError:
+            pass
+                 
         number = 0
         while os.path.isfile(str(name) +'_'+str(number)+ '_v.txt'):
             os.remove(str(name) +'_'+str(number)+ '_v.txt')
             os.remove(str(name) +'_'+str(number)+ '_nwalls.txt')
             os.remove(str(name) +'_'+str(number)+ '_exc_pts.txt')
+            os.remove(str(name) +'_'+str(number)+ '_run_time.txt')
             try:
                 os.remove(str(name) +'_'+str(number)+ '_nop.txt')
             except FileNotFoundError:
@@ -81,6 +89,7 @@ def run():
             os.remove(str(name) +'_'+str(number)+ '_v.data')
             os.remove(str(name) +'_'+str(number)+ '_nwalls.data')
             os.remove(str(name) +'_'+str(number)+ '_exc_pts.data')
+            os.remove(str(name) +'_'+str(number)+ '_run_time.data')
             try:
                 os.remove(str(name) +'_'+str(number)+ '_nop.data')
             except FileNotFoundError:
@@ -95,6 +104,7 @@ def run():
         delete_bulk = input('Delete bulk data? (y)/n \n')
         delete_mem_maps = input('Delete memory maps? (y)/n \n')
         delete_merged = input('Delete merged data? (y)/n \n')
+        delete_logs = input("Delete logs (y)/n \n")
     
         if delete_bulk in ['', 'y','Y']:
             for p in range(1,parts+1):
@@ -126,6 +136,10 @@ def run():
                     os.remove(str(name) + '_d_phi_data' + str(p) + '.npy')
                 except FileNotFoundError:
                     pass
+                try:
+                    os.remove(str(name) + '_run_time_data' + str(p) + '.npy')
+                except FileNotFoundError:
+                    pass                
                     
         if delete_mem_maps in ['', 'y','Y']:
             try:         
@@ -144,6 +158,10 @@ def run():
                 os.remove(str(name) + '_nop.mymemmap')
             except FileNotFoundError:
                 pass
+            try:
+                os.remove(str(name) + '_run_time.mymemmap')
+            except FileNotFoundError:
+                pass
             
         if delete_merged in ['', 'y','Y']:
             number = 0
@@ -151,6 +169,7 @@ def run():
                 os.remove(str(name) +'_'+str(number)+ '_v.txt')
                 os.remove(str(name) +'_'+str(number)+ '_nwalls.txt')
                 os.remove(str(name) +'_'+str(number)+ '_exc_pts.txt')
+                os.remove(str(name) +'_'+str(number)+ '_run_time.txt')
                 try:
                     os.remove(str(name) +'_'+str(number)+ '_nop.txt')
                 except FileNotFoundError:
@@ -161,10 +180,16 @@ def run():
                 os.remove(str(name) +'_'+str(number)+ '_v.data')
                 os.remove(str(name) +'_'+str(number)+ '_nwalls.data')
                 os.remove(str(name) +'_'+str(number)+ '_exc_pts.data')
+                os.remove(str(name) +'_'+str(number)+ '_run_time.data')
                 try:
                     os.remove(str(name) +'_'+str(number)+ '_nop.data')
                 except FileNotFoundError:
                     pass
                 number+=1
+        if delete_logs in ['', 'y','Y']:
+            try:
+                os.remove('out.txt') 
+            except FileNotFoundError:
+                pass            
            
     print('---Cleanup done!---')

@@ -174,7 +174,7 @@ def run():
     count_op = n_op[0]
     cond_pts = np.zeros((Nt),dtype=DTYPE)
     run_time = np.zeros((Nt),dtype=DTYPE)
-    run_time[0] = np.nan
+    run_time[0] = np.load(str(name)+'_run_time_data'+str(last_part)+'.npy')[-1]
     tspan[0] = tspan_init
     for i in range(1,Nt):
         tspan[i] = tspan[0]+dt*i
@@ -214,7 +214,7 @@ def run():
             # print("PRS algorithm is finished %s seconds ---" % (time.time() - start_prs)) 
             
             # Step 5: Now we must update the neighbours
-            start_neig = time.time()   #timer for counting the time it takes to complete a neighbours update step  
+            # start_neig = time.time()   #timer for counting the time it takes to complete a neighbours update step  
             # print("Updating neighbors")
             for coord, point in phi_dic.items():
                 # Get coordinates of the neighbours
@@ -280,7 +280,8 @@ def run():
                     try:
                         phi_u = phi_dic[(x_r, y_u)][0]
                     except KeyError:
-                        phi_u = sign_phi
+                        phi_u = sign_phi    
+
                     try:
                         phi_d = phi_dic[(x_r, y_d)][0]
                     except KeyError:
@@ -369,12 +370,15 @@ def run():
             # And update the dictionary with the new points
             phi_dic.update(new_points)
             
+            run_time[n+1] = time.time() - start_prs    
         # save part to disk
         np.save(str(name) + '_tspan_data' + str(part+int(last_part)) + '.npy', tspan)
         np.save(str(name) + '_vdata' + str(part+int(last_part)) + '.npy', v)
         np.save(str(name) + '_nwalls_data' + str(part+int(last_part)) + '.npy', N_walls)
         np.save(str(name) + '_nop_data' + str(part+int(last_part)) + '.npy', n_op)
-        np.save(str(name) + '_exc_pts_data' + str(part+int(last_part)) + '.npy', cond_pts)       
+        np.save(str(name) + '_exc_pts_data' + str(part+int(last_part)) + '.npy', cond_pts)
+        np.save(str(name) + '_run_time_data' + str(part+int(last_part)) + '.npy', run_time)
+        
         if (part < nparts):
             #Lets initialize the t again from the last point
             tspan_init = tspan[-1] 
@@ -391,8 +395,12 @@ def run():
             n_op[1:] = 0
             
             cond_pts[0] = cond_pts[-1]
-        run_time[n+1] = time.time() - start_prs
-        np.save(str(name) + '_run_time' + str(part+int(last_part)) + '.npy', tspan)
+            
+            run_time[0] = run_time[-1]
+
+            
+            
+        
 
     print("Seconds:" +  str(time.time() - start_time))
     sys.stdout = orig_stdout
