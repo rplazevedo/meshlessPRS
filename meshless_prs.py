@@ -37,14 +37,38 @@ def run():
     # Set initial counters and parameters:
     V0 = (np.pi**2)*(phi_0)**2/(2*w0**2)
     count_op = 0
-    
+        
     start_time = time.time()    # initial time for measuring speed of calculation
     
-    orig_stdout = sys.stdout
-    f = open('out.txt', 'a')
-    sys.stdout = f
+    # orig_stdout = sys.stdout
+    # f = open('out.txt', 'a')
+    # sys.stdout = f
     
     # ----- FUNCTIONS -----
+    
+    def update_progress(progress):
+        """
+        Displays a progress bar for the operation. 'progress should be a value
+        between 0 and 1.
+        """
+        barLength = 50 # Modify this to change the length of the progress bar
+        status = ""
+        if isinstance(progress, int):
+            progress = float(progress)
+        if not isinstance(progress, float):
+            progress = 0
+            status = "error: progress var must be float\r\n"
+        if progress < 0:
+            progress = -progress
+            status = "Halt...\r\n"
+        if progress >= 1:
+            progress = 1
+            status = "Done...\r\n"
+        block = int(round(barLength*progress))
+        text = "\rPercent: [{0}] {1:.2f}% {2}".format( "#"*block +
+                           "-"*(barLength-block), progress*100, status)
+        sys.stdout.write(text)
+        sys.stdout.flush()
     
     def V(phi):
         """
@@ -178,7 +202,8 @@ def run():
     tspan[0] = tspan_init
     for i in range(1,Nt):
         tspan[i] = tspan[0]+dt*i
-
+    
+    update_progress(0)   
     
     # Steps 1, 2 & 3: Initialize the diccionary for storing the values phi_dic[(i,j)].
     # (i,j) is a tuple, where i and j are the coordinates of the points.
@@ -370,7 +395,11 @@ def run():
             # And update the dictionary with the new points
             phi_dic.update(new_points)
             
-            run_time[n+1] = time.time() - start_prs    
+            run_time[n+1] = time.time() - start_prs           
+            
+            # update progress bar
+            update_progress(((part-1)+(n/Nt))/nparts)
+            
         # save part to disk
         np.save(str(name) + '_tspan_data' + str(part+int(last_part)) + '.npy', tspan)
         np.save(str(name) + '_vdata' + str(part+int(last_part)) + '.npy', v)
@@ -397,11 +426,9 @@ def run():
             cond_pts[0] = cond_pts[-1]
             
             run_time[0] = run_time[-1]
-
-            
+        
             
         
 
     print("Seconds:" +  str(time.time() - start_time))
-    sys.stdout = orig_stdout
-    f.close()
+    # sys.stdout = orig_stdout
