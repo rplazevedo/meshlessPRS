@@ -13,8 +13,7 @@ import configparser
     
 DTYPE = np.float32
 
-def run():
-  
+def run():    
     config = configparser.ConfigParser()
     config.read('input.ini') 
     
